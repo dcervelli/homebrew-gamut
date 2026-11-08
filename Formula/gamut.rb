@@ -7,22 +7,23 @@
 class Gamut < Formula
   desc "GPU image viewer with color management for photographs, measurements and HDR"
   homepage "https://github.com/dcervelli/gamut"
-  url "https://github.com/dcervelli/gamut/archive/refs/tags/v0.13.0.tar.gz"
-  sha256 "c411a1b662bc3cd1b016a5d34129009d53bc9e2435284fccc6049c428f8e0df8"
+  url "https://github.com/dcervelli/gamut/archive/refs/tags/v0.14.0.tar.gz"
+  sha256 "d0539fdcdeda16d4ce252a5e6866ecab69c3b41ebdf013d942b57f3eeaa160dc"
   license any_of: ["MIT", "Apache-2.0"]
 
   depends_on "pkgconf" => :build
   depends_on "rust" => :build
-  # libheif reads HEIC and AVIF, with whichever codecs Homebrew builds it
-  # with; libraw develops camera raw files, 0.21 or newer, which `build.rs`
+  # libraw develops camera raw files, 0.21 or newer, which `build.rs`
   # checks. little-cms2 is linked directly as well, because libraw's
-  # pkg-config file names it among the libraries to link.
-  depends_on "libheif"
+  # pkg-config file names it among the libraries to link. HEIC and AVIF are
+  # read by macOS itself.
   depends_on "libraw"
   depends_on "little-cms2"
   # Linux is the PKGBUILD's, where the window, the file dialog and the
-  # clipboard need the desktop's own libraries rather than Homebrew's.
-  depends_on :macos
+  # clipboard need the desktop's own libraries rather than Homebrew's. And
+  # macOS 15 or later, where ImageIO reads a HEIC's ISO gain map: the
+  # program links the constant that names it.
+  depends_on macos: :sequoia
 
   def install
     system "cargo", "install", *std_cargo_args(root: buildpath/"built")
