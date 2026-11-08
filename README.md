@@ -5,23 +5,31 @@ image viewer with color management for photographs, measurement data and
 HDR.
 
 ```sh
-brew install dcervelli/gamut/gamut
+brew install --cask dcervelli/gamut/gamut
 ```
 
-This builds `gamut` from its release on your Mac and installs `Gamut.app`
-beside the `gamut` command. To have the application in `/Applications`:
+This installs `Gamut.app`, signed and notarized, into `/Applications`,
+where Finder's "Open With" and the Dock find it, and the `gamut` command,
+its manual page and its shell completions beside Homebrew's own. It needs
+macOS 15 or later on Apple silicon.
+
+Installed `gamut` through this tap's formula before 0.14.0? The formula is
+gone, and an installed copy no longer updates. Switch to the cask, which
+keeps your settings:
 
 ```sh
-ln -sf "$(brew --prefix gamut)/Gamut.app" /Applications/Gamut.app
+brew uninstall gamut
+rm -f /Applications/Gamut.app   # the link the formula suggested, if you made it
+brew install --cask dcervelli/gamut/gamut
 ```
 
 ## Maintaining
 
-`Formula/gamut.rb` is a copy. The formula is edited in the gamut repository,
-as `packaging/gamut.rb`, and `bin/pkgbuild-sha` there copies it here once it
-points at a new release; commit and push the copy from here.
+`Casks/gamut.rb` is a copy. The cask is edited in the gamut repository, as
+`packaging/cask.rb`, and `bin/pkgbuild-sha` there copies it here once it
+points at a new release's `Gamut-X.Y.Z-arm64.zip`, which the gamut
+repository's release workflow builds, signs, notarizes and attaches to the
+release; commit and push the copy from here.
 
-Pushing to `main` runs `brew test-bot`'s syntax check. A pull request builds
-the formula and its bottles on macOS; to publish the bottles, run the
-`brew pr-pull` workflow with the pull request's number, which adds them to
-the formula and pushes to `main`.
+Pushing to `master`, or opening a pull request, runs `brew test-bot`'s syntax
+check of the tap.
